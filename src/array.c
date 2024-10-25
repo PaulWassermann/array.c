@@ -18,16 +18,16 @@ Array array(size_t *shape, size_t ndim, DType dtype, void *data) {
 
     void *data_ptr;
 
+    // Since we don't know how the data and shape arrays were defined, it is 
+    // safer to allocate memory for new arrays and copy the content of 
+    // the users's arrays; that way we can be sure we must free their memory and 
+    // avoid potential memory leaks in the `free_array` function
     if (data == NULL) {
         data_ptr = SAFE_MALLOC(get_element_size(dtype) * nelems);
     } else {
         data_ptr = data;
     }
 
-    // Since we don't know how the shape array was defined, it is safer to
-    // allocate memory for a new shape array and copy the content of the 
-    // users's array; that way we can be sure we must free its memory and avoid 
-    // potential memory leaks 
     size_t *shape_copy = SAFE_MALLOC(sizeof(*shape_copy) * ndim);
 
     for (size_t dim = 0; dim < ndim; dim++) {
@@ -64,12 +64,12 @@ void free_array(Array arr) {
 }
 
 size_t get_element_size(DType dtype) {
-    switch(dtype) {
-        case float32:
-            return sizeof(float);
-        default:
-            fprintf(stderr, "Unsupported DType %d", dtype);
-            exit(1);
+    switch (dtype) {
+    case float32:
+        return sizeof(float);
+    default:
+        fprintf(stderr, "Unsupported DType %d", dtype);
+        exit(1);
     }
 }
 
@@ -94,11 +94,11 @@ size_t *memory_index_to_array(size_t memory_index, Array *arr) {
 }
 
 Array view(size_t *shape, size_t ndim, Array *arr) {
-    size_t nelems = reduce_mul(shape, arr->ndim);
+    size_t nelems = reduce_mul(shape, ndim);
 
     if (nelems != arr->nelems) {
-        fprintf(stderr, "Cannot view array with %zu elements as shape %s", 
-        arr->nelems, stringify_shape(arr->shape, arr->ndim, 1024));
+        fprintf(stderr, "Cannot view array with %zu elements as shape %s",
+                arr->nelems, stringify_shape(shape, ndim, 1024));
         exit(1);
     }
 
@@ -110,8 +110,8 @@ Array view(size_t *shape, size_t ndim, Array *arr) {
 
 // PRINT FUNCTIONS
 void print_info(Array *arr) {
-    printf("Size of Array: %zu bytes\n", 
-    get_element_size(arr->dtype) * arr->nelems);
+    printf("Size of Array: %zu bytes\n",
+           get_element_size(arr->dtype) * arr->nelems);
     printf("The initialized array has %zu dimensions and %zu elements\n",
            arr->ndim, arr->nelems);
 

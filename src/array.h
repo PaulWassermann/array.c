@@ -3,9 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "utils.h"
 
-typedef enum DType { float32 } DType;
+typedef enum DType { float32, int32 } DType;
 
 typedef struct Array {
     void *data;
@@ -15,7 +16,6 @@ typedef struct Array {
     size_t nelems;
     DType dtype;
 } Array;
-
 
 // INITIALIZATION FUNCTIONS
 Array array(size_t *shape, size_t ndim, DType dtype, void *data);
