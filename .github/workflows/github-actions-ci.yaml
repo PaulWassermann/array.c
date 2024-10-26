@@ -1,0 +1,42 @@
+name: Basic CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+
+  format:
+    name: Check code format
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run clang-format
+        run: make check-format
+
+  code-analysis:
+    name: Code analysis
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run clang analyzer
+        run: make code-analysis
+
+  test:
+    name: Unit tests
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile tests executable
+        run: make test
+
+      - name: Run tests executable
+        run: target\tests.exe

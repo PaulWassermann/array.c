@@ -18,9 +18,9 @@ Array array(size_t *shape, size_t ndim, DType dtype, void *data) {
 
     void *data_ptr;
 
-    // Since we don't know how the data and shape arrays were defined, it is 
-    // safer to allocate memory for new arrays and copy the content of 
-    // the users's arrays; that way we can be sure we must free their memory and 
+    // Since we don't know how the data and shape arrays were defined, it is
+    // safer to allocate memory for new arrays and copy the content of
+    // the users's arrays; that way we can be sure we must free their memory and
     // avoid potential memory leaks in the `free_array` function
     if (data == NULL) {
         data_ptr = SAFE_MALLOC(get_element_size(dtype) * nelems);

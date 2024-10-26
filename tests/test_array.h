@@ -12,8 +12,8 @@ void test_array() {
         array_args((size_t[]){64, 10}, 2, float32, NULL),
         array_args((size_t[]){256, 64, 64}, 3, float32, NULL),
         array_args((size_t[]){8, 4, 4, 1}, 4, float32, NULL),
-        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, float32, NULL)
-        };
+        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, float32,
+                   NULL)};
 
     Array expected_arrays[] = {
         (Array){.data = NULL,
@@ -42,7 +42,7 @@ void test_array() {
                 .dtype = float32},
         (Array){.data = NULL,
                 .shape = (size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1 ,1, 1},
+                .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .ndim = 10,
                 .nelems = 8,
                 .dtype = float32},
@@ -59,8 +59,8 @@ void test_array() {
             assert(arr.data == args.data);
         }
 
-        assert(elementwise_cmp(arr.shape, expected_arr.shape, 
-                               expected_arr.ndim));
+        assert(
+            elementwise_cmp(arr.shape, expected_arr.shape, expected_arr.ndim));
         assert(elementwise_cmp(arr.strides, expected_arr.strides,
                                expected_arr.ndim));
         assert(arr.ndim == expected_arr.ndim);
@@ -77,8 +77,8 @@ void test_empty() {
         array_args((size_t[]){64, 10}, 2, float32, NULL),
         array_args((size_t[]){256, 64, 64}, 3, float32, NULL),
         array_args((size_t[]){8, 4, 4, 1}, 4, float32, NULL),
-        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, float32, NULL)
-        };
+        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, float32,
+                   NULL)};
 
     Array expected_arrays[] = {
         (Array){.data = NULL,
@@ -107,7 +107,7 @@ void test_empty() {
                 .dtype = float32},
         (Array){.data = NULL,
                 .shape = (size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1 ,1, 1},
+                .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .ndim = 10,
                 .nelems = 8,
                 .dtype = float32},
@@ -119,8 +119,8 @@ void test_empty() {
         Array expected_arr = expected_arrays[i];
 
         assert(arr.data != NULL);
-        assert(elementwise_cmp(arr.shape, expected_arr.shape, 
-                               expected_arr.ndim));
+        assert(
+            elementwise_cmp(arr.shape, expected_arr.shape, expected_arr.ndim));
         assert(elementwise_cmp(arr.strides, expected_arr.strides,
                                expected_arr.ndim));
         assert(arr.ndim == expected_arr.ndim);
