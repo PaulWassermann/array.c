@@ -1,9 +1,6 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "utils.h"
 
 typedef enum DType { float32, int32 } DType;

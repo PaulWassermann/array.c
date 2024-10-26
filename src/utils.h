@@ -1,9 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #define SAFE_MALLOC(size) safe_malloc(size, __FILE__, __LINE__)
 
 // Array utils
