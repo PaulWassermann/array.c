@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "log.h"
 #include "utils.h"
 
 // Array utils
@@ -44,13 +45,14 @@ char *stringify_shape(size_t *shape, size_t ndim, size_t buffer_size) {
 }
 
 // Memory utils
-void *safe_malloc(size_t size, char *file, int line) {
+void *safe_malloc(size_t size, char *file, int line, const char *function) {
     void *ptr = malloc(size);
 
     if (ptr == NULL) {
-        fprintf(stderr, "Could not allocate %zu bytes (File: %s, line: %d)\n",
-                size, file, line);
-        exit(1);
+        LOG_ERROR(
+            "Could not allocate %zu bytes (File: %s, line: %d, function: %s)\n",
+            size, file, line, function);
+        exit(EXIT_FAILURE);
     }
 
     return ptr;

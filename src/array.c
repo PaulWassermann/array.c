@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "array.h"
+#include "log.h"
 
 // UTILS (TO MOVE)
 void compute_strides(Array *arr) {
@@ -71,8 +72,8 @@ size_t get_element_size(DType dtype) {
     case float32:
         return sizeof(float);
     default:
-        fprintf(stderr, "Unsupported DType %d", dtype);
-        exit(1);
+        LOG_ERROR("Unsupported DType %d", dtype);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -100,9 +101,9 @@ Array view(size_t *shape, size_t ndim, Array *arr) {
     size_t nelems = reduce_mul(shape, ndim);
 
     if (nelems != arr->nelems) {
-        fprintf(stderr, "Cannot view array with %zu elements as shape %s",
-                arr->nelems, stringify_shape(shape, ndim, 1024));
-        exit(1);
+        LOG_ERROR("Cannot view array with %zu elements as shape %s",
+                  arr->nelems, stringify_shape(shape, ndim, 1024));
+        exit(EXIT_FAILURE);
     }
 
     return array(shape, ndim, arr->dtype, arr->data);
