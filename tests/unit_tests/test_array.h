@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "utils.h"
+#include "..\utils.h"
 
-#include "..\src\array.h"
+#include "..\..\src\array.h"
 
 // INITIALIZATION FUNCTIONS
 void test_array() {

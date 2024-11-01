@@ -9,8 +9,8 @@ SRC_FILES = src\array.c src\utils.c
 TEST_FILES = tests\tests.c tests\utils.c
 
 FORMAT_FILES = $(SRC_FILES) src\array.h src\utils.h \
-               $(TEST_FILES) tests\test_array.h tests\test_utils.h tests\utils.h
-
+               $(TEST_FILES) tests\builder.c tests\utils.h \
+               tests\unit_tests\test_array.h tests\unit_tests\test_utils.h 
 
 .PHONY: check-format
 check-format:

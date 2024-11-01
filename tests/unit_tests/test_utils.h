@@ -1,9 +1,9 @@
 #include <assert.h>
 #include <string.h>
 
-#include "utils.h"
+#include "..\utils.h"
 
-#include "..\src\utils.h"
+#include "..\..\src\utils.h"
 
 void test_reduce_mul() {
     SizedList arrays[] = {
