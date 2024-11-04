@@ -6,10 +6,10 @@ TARGET_ARCH = x86_64-pc-windows-msvc
 CFLAGS = -Wall -Werror --target=$(TARGET_ARCH)
 
 SRC_FILES = src\array.c src\utils.c
-TEST_FILES = tests\tests.c tests\utils.c
+TEST_FILE = tests\tests.c
 
 FORMAT_FILES = $(SRC_FILES) src\array.h src\utils.h \
-               $(TEST_FILES) tests\builder.c tests\utils.h \
+               tests\builder.c tests\utils.h \
                tests\unit_tests\test_array.h tests\unit_tests\test_utils.h 
 
 .PHONY: check-format
@@ -33,5 +33,10 @@ target-folder:
 	@IF NOT EXIST "target" MKDIR "target"
 
 .PHONY: test
-test: target-folder
-	$(CC) $(CFLAGS) -o target\tests.exe $(TEST_FILES) $(SRC_FILES)
+test: target-folder test-builder
+	target\builder.exe tests -t tests\template.txt -o $(TEST_FILE)
+	$(CC) $(CFLAGS) -o target\tests.exe $(TEST_FILE) $(SRC_FILES)
+
+.PHONY: test-builder
+test-builder:
+	$(CC) $(CFLAGS) -o target\builder.exe tests\builder.c src\utils.c

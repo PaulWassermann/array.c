@@ -11,7 +11,9 @@
 #define INFO_TAG "INFO"
 #define ERROR_TAG "ERROR"
 
-#define LOG_LEVEL DEBUG
+#ifndef LOG_LEVEL
+#define LOG_LEVEL DEBUG_LEVEL
+#endif 
 
 #define LOG_FORMAT "[%s][%s][%s] Line %d :: "
 #define LOG_ARGS(TAG) TAG, __FILE__, __FUNCTION__, __LINE__
