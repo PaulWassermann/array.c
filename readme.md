@@ -1,3 +1,5 @@
+![Pipeline status](https://github.com/PaulWassermann/array.c/actions/workflows/github-actions-ci.yaml/badge.svg)
+
 # array.c
 
 This project is about building a scientific computing library, mimicking 
