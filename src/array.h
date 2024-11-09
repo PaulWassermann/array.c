@@ -1,8 +1,6 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include "utils.h"
-
 typedef enum DType { float32, int32 } DType;
 
 typedef struct Array {
