@@ -2,8 +2,6 @@
 
 #include <windows.h>
 
-#define LOG_LEVEL ERROR_LEVEL
-
 #include "..\src\log.h"
 #include "..\src\utils.h"
 
@@ -57,6 +55,8 @@ void parse_args(int argc, char *argv[], CommandLineArgs *out);
 
 // TESTS BUILDING FUNCTIONS
 void get_tests_from_file(char *filename, UnitTests *file_tests) {
+    LOG_DEBUG("Discovering unit tests in file %s\n", filename);
+
     char line_buffer[XS_BUFFER_SIZE];
     char prefix[] = "void ";
 
@@ -84,6 +84,8 @@ void get_tests_from_file(char *filename, UnitTests *file_tests) {
 
 void fill_template(char *buffer, size_t buffer_size, char *template,
                    FileList *files, UnitTests *tests) {
+    LOG_DEBUG("Filling template in buffer of size %zu bytes\n", buffer_size);
+
     char *includes_buffer =
         SAFE_MALLOC(sizeof(*includes_buffer) * L_BUFFER_SIZE);
     char *tests_buffer = SAFE_MALLOC(sizeof(*tests_buffer) * XL_BUFFER_SIZE);
@@ -112,6 +114,8 @@ void fill_template(char *buffer, size_t buffer_size, char *template,
 }
 
 void get_relative_path(char *dest, char *src, char *base) {
+    LOG_DEBUG("Getting relative path from %s with respect to %s\n", src, base);
+
     char base_absolute[M_BUFFER_SIZE];
     char src_absolute[M_BUFFER_SIZE];
 
@@ -163,6 +167,9 @@ void get_relative_paths(FileList *dest, FileList *src, char *base) {
 }
 
 void read_file(char *buffer, size_t buffer_size, char *filename) {
+    LOG_DEBUG("Reading file %s into buffer of size %zu bytes\n", filename,
+              buffer_size);
+
     size_t read_size;
     FILE *template_file = safe_open_file(filename, "r");
 
@@ -171,8 +178,8 @@ void read_file(char *buffer, size_t buffer_size, char *filename) {
     fclose(template_file);
 
     if (read_size >= XL_BUFFER_SIZE - 1) {
-        LOG_ERROR("Template test file %s is to voluminous and couldn't be read "
-                  "entirely",
+        LOG_ERROR("Template test file %s is too voluminous and couldn't be "
+                  "read entirely",
                   filename);
         exit(EXIT_FAILURE);
     }
@@ -181,9 +188,11 @@ void read_file(char *buffer, size_t buffer_size, char *filename) {
 }
 
 FILE *safe_open_file(char *filename, char *mode) {
+    LOG_DEBUG("Opening file %s in mode %s\n", filename, mode);
+
     FILE *file;
     if ((file = fopen(filename, mode)) == NULL) {
-        LOG_ERROR("Could not open file '%s'", filename);
+        LOG_ERROR("Could not open file %s\n", filename);
         exit(EXIT_FAILURE);
     }
 
@@ -191,11 +200,12 @@ FILE *safe_open_file(char *filename, char *mode) {
 }
 
 void walk_folder(char *folder_name, FileList *files, int depth) {
+    LOG_DEBUG("Walking folder %s with depth %d\n", folder_name, depth);
+
     if (depth < 0) {
         return;
     }
 
-    LOG_DEBUG("Walking folder %s\n", folder_name);
     char current_path[L_BUFFER_SIZE];
     HANDLE find_handle;
     WIN32_FIND_DATAA find_file_data;
@@ -228,10 +238,12 @@ void walk_folder(char *folder_name, FileList *files, int depth) {
 }
 
 void write_to_file(char *buffer, char *filename, char *mode) {
+    LOG_DEBUG("Writing to file %s in mode %s\n", filename, mode);
+
     FILE *dest_file = safe_open_file(filename, mode);
 
     if (fputs(buffer, dest_file) == EOF) {
-        LOG_ERROR("Could not write buffer to file '%s'", filename);
+        LOG_ERROR("Could not write buffer to file '%s'\n", filename);
         exit(EXIT_FAILURE);
     }
 
@@ -251,6 +263,7 @@ void print_usage(char *exe, char *error_msg, int exit_code) {
 
 void parse_args(int argc, char *argv[], CommandLineArgs *out) {
     char prev_flag;
+
     if (argc == 2 && strcmp(argv[1], "-h") == 0) {
         PRINT_USAGE_SUCCESS();
     } else if (argc == 6) {
@@ -268,7 +281,7 @@ void parse_args(int argc, char *argv[], CommandLineArgs *out) {
             switch (argv[i][1]) {
             case 't':
                 if (prev_flag == 't') {
-                    PRINT_USAGE_FAILURE("flag -t has already been passed",
+                    PRINT_USAGE_FAILURE("flag -t was passed more than once",
                                         NULL);
                 }
                 strncpy_s(out->template_file_path, M_BUFFER_SIZE, argv[i + 1],
@@ -276,7 +289,7 @@ void parse_args(int argc, char *argv[], CommandLineArgs *out) {
                 break;
             case 'o':
                 if (prev_flag == 'o') {
-                    PRINT_USAGE_FAILURE("flag -o has already been passed",
+                    PRINT_USAGE_FAILURE("flag -o was passed more than once",
                                         NULL);
                 }
                 strncpy_s(out->output_file_path, M_BUFFER_SIZE, argv[i + 1],
@@ -315,9 +328,9 @@ int main(int argc, char *argv[]) {
     }
 
     for (size_t i = 0; i < files->nfiles; i++) {
+        LOG_DEBUG("File: %s, found tests:\n", files->file_paths[i]);
         for (size_t j = 0; j < tests[i].ntests; j++) {
-            LOG_DEBUG("File %s: found %s\n", files->file_paths[i],
-                      tests[i].names[j]);
+            LOG_DEBUG("=====> %s\n", tests[i].names[j]);
         }
     }
 
@@ -327,8 +340,8 @@ int main(int argc, char *argv[]) {
     get_relative_paths(relative_files, files, cl_args.output_file_path);
 
     for (size_t i = 0; i < files->nfiles; i++) {
-        LOG_DEBUG("Given path: %s\n", files->file_paths[i]);
-        LOG_DEBUG("Relative path: %s\n", relative_files->file_paths[i]);
+        LOG_DEBUG("Path: %s / Relative: %s\n", files->file_paths[i],
+                  relative_files->file_paths[i]);
     }
 
     char *template_string =
@@ -339,6 +352,8 @@ int main(int argc, char *argv[]) {
         SAFE_MALLOC(sizeof(*filled_template) * XL_BUFFER_SIZE);
     fill_template(filled_template, XL_BUFFER_SIZE, template_string,
                   relative_files, tests);
+
+    LOG_DEBUG("Tests launcher file:\n%s", filled_template);
 
     write_to_file(filled_template, cl_args.output_file_path, "w");
 

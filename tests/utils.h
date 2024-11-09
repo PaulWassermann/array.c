@@ -1,25 +1,40 @@
 #ifndef TEST_H
 #define TEST_H
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "..\src\array.h"
+#include "..\src\log.h"
+
+// Platform specific includes
+#include <windows.h>
+
+#define ASSERT_ALL_EQUAL(a, b, length)                                         \
+    for (size_t i_aae = 0; i_aae < (length); i_aae++) {                        \
+        assert((a)[i_aae] == (b)[i_aae]);                                      \
+    }
 
 #define LENGTH(static_array) sizeof(static_array) / sizeof(static_array[0])
 
 #define TEST(func)                                                             \
     printf("=> Testing %s... ", #func);                                        \
+    LARGE_INTEGER func##_tic, func##_toc;                                      \
+                                                                               \
     time_t func##_start = time(NULL);                                          \
-    clock_t func##_tic = clock();                                              \
+    QueryPerformanceCounter(&func##_tic);                                      \
     func();                                                                    \
-    clock_t func##_toc = clock();                                              \
+    QueryPerformanceCounter(&func##_toc);                                      \
     time_t func##_end = time(NULL);                                            \
+                                                                               \
     printf("OK\n");                                                            \
-    printf("Wall time: %fs, CPU time: %fs\n\n",                                \
+    printf("Wall time: %.2fs, CPU time: %fs\n\n",                              \
            difftime(func##_end, func##_start),                                 \
-           (double)(func##_toc - func##_tic) / CLOCKS_PER_SEC);
+           (double)(func##_toc.QuadPart - func##_tic.QuadPart) /               \
+               get_cpu_frequency());
 
 typedef struct ArrayArgs {
     size_t *shape;
@@ -34,7 +49,6 @@ typedef struct SizedList {
 } SizedList;
 
 ArrayArgs array_args(size_t *shape, size_t ndim, DType dtype, void *data);
-bool elementwise_cmp(size_t *a, size_t *b, size_t ndim);
 SizedList sized_list(void *data, size_t len);
 
 ArrayArgs array_args(size_t *shape, size_t ndim, DType dtype, void *data) {
@@ -42,13 +56,10 @@ ArrayArgs array_args(size_t *shape, size_t ndim, DType dtype, void *data) {
         .shape = shape, .ndim = ndim, .dtype = dtype, .data = data};
 }
 
-bool elementwise_cmp(size_t *a, size_t *b, size_t ndim) {
-    for (size_t dim = 0; dim < ndim; dim++) {
-        if (a[dim] != b[dim]) {
-            return false;
-        }
-    }
-    return true;
+LONGLONG get_cpu_frequency() {
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+    return frequency.QuadPart;
 }
 
 SizedList sized_list(void *data, size_t len) {

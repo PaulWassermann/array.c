@@ -1,19 +1,25 @@
+#include <time.h>
+#include <windows.h>
+
 #include "utils.h"
 
 // UNIT TESTS INCLUDES
 %s
 
 int main(int argc, char **argv) {
+    LARGE_INTEGER tic, toc;
+    
     time_t start = time(NULL);
-    clock_t tic = clock();
+    QueryPerformanceCounter(&tic);
 
     // UNIT TESTS EXECUTION
     %s
     
-    clock_t toc = clock();
+    QueryPerformanceCounter(&toc);
     time_t end = time(NULL);
-    printf("\nGlobal wall time: %%.2fs, CPU time: %%.2fs\n", difftime(end, start),
-           (double)(toc - tic) / CLOCKS_PER_SEC);
+    printf("\nGlobal wall time: %%.2fs, CPU time: %%fs\n", 
+           difftime(end, start),
+           (double)(toc.QuadPart - tic.QuadPart) / get_cpu_frequency());
 
     return EXIT_SUCCESS;
 }
