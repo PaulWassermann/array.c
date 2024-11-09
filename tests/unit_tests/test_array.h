@@ -18,32 +18,27 @@ void test_array() {
                    NULL)};
 
     Array expected_arrays[] = {
-        (Array){.data = NULL,
-                .shape = (size_t[]){1},
+        (Array){.shape = (size_t[]){1},
                 .strides = (size_t[]){1},
                 .ndim = 1,
                 .nelems = 1,
                 .dtype = float32},
-        (Array){.data = NULL,
-                .shape = (size_t[]){64, 10},
+        (Array){.shape = (size_t[]){64, 10},
                 .strides = (size_t[]){10, 1},
                 .ndim = 2,
                 .nelems = 640,
                 .dtype = float32},
-        (Array){.data = NULL,
-                .shape = (size_t[]){256, 64, 64},
+        (Array){.shape = (size_t[]){256, 64, 64},
                 .strides = (size_t[]){64 * 64, 64, 1},
                 .ndim = 3,
                 .nelems = (size_t)256 * 64 * 64,
                 .dtype = float32},
-        (Array){.data = NULL,
-                .shape = (size_t[]){8, 4, 4, 1},
+        (Array){.shape = (size_t[]){8, 4, 4, 1},
                 .strides = (size_t[]){16, 4, 1, 1},
                 .ndim = 4,
                 .nelems = 8 * 4 * 4,
                 .dtype = float32},
-        (Array){.data = NULL,
-                .shape = (size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        (Array){.shape = (size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .ndim = 10,
                 .nelems = 8,
@@ -61,10 +56,8 @@ void test_array() {
             assert(arr.data == args.data);
         }
 
-        assert(
-            elementwise_cmp(arr.shape, expected_arr.shape, expected_arr.ndim));
-        assert(elementwise_cmp(arr.strides, expected_arr.strides,
-                               expected_arr.ndim));
+        ASSERT_ALL_EQUAL(arr.shape, expected_arr.shape, expected_arr.ndim);
+        ASSERT_ALL_EQUAL(arr.strides, expected_arr.strides, expected_arr.ndim);
         assert(arr.ndim == expected_arr.ndim);
         assert(arr.nelems == expected_arr.nelems);
         assert(arr.dtype == expected_arr.dtype);
@@ -121,10 +114,8 @@ void test_empty() {
         Array expected_arr = expected_arrays[i];
 
         assert(arr.data != NULL);
-        assert(
-            elementwise_cmp(arr.shape, expected_arr.shape, expected_arr.ndim));
-        assert(elementwise_cmp(arr.strides, expected_arr.strides,
-                               expected_arr.ndim));
+        ASSERT_ALL_EQUAL(arr.shape, expected_arr.shape, expected_arr.ndim);
+        ASSERT_ALL_EQUAL(arr.strides, expected_arr.strides, expected_arr.ndim);
         assert(arr.ndim == expected_arr.ndim);
         assert(arr.nelems == expected_arr.nelems);
         assert(arr.dtype == expected_arr.dtype);
@@ -170,8 +161,8 @@ void test_memory_index_to_array() {
     for (size_t i = 0; i < LENGTH(array_indices); i++) {
         size_t *computed_indices =
             memory_index_to_array(memory_indices[i], &arr);
-        assert(elementwise_cmp(array_indices[i], computed_indices,
-                               LENGTH(array_indices[i])));
+        ASSERT_ALL_EQUAL(array_indices[i], computed_indices,
+                         LENGTH(array_indices[i]));
     }
 
     free_array(arr);
@@ -191,7 +182,7 @@ void test_view() {
         SizedList new_view = views[i];
         Array new_arr = view(new_view.data, new_view.len, &arr);
 
-        assert(elementwise_cmp(new_arr.shape, new_view.data, new_arr.ndim));
+        ASSERT_ALL_EQUAL(new_arr.shape, (size_t *)new_view.data, new_arr.ndim);
     }
 
     free_array(arr);

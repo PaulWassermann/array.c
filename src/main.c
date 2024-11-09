@@ -2,12 +2,16 @@
 #include <stdlib.h>
 
 #include "array.h"
+#include "ops\ops.h"
 
 int main(int argc, char **argv) {
 
-    Array arr = empty((size_t[]){100000000, 10000000000, 100000000}, 3, float32);
+    Array array1 = array((size_t[]){4, 2}, 2, float32, (float[]){1, 2, 3, 4});
+    Array array2 = array((size_t[]){2, 2}, 2, float32, (float[]){4, 3, 1, 2});
 
-    print_info(&arr);
+    Array result = add(&array1, &array2);
+
+    print_info(&result);
     
     return EXIT_SUCCESS;
 }

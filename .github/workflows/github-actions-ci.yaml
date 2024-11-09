@@ -35,6 +35,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Compile test builder executable
+        run: make test-builder
+
       - name: Compile tests executable
         run: make test
 

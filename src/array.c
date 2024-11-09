@@ -8,7 +8,7 @@
 // INITIALIZATION FUNCTIONS
 Array array(size_t *shape, size_t ndim, DType dtype, void *data) {
     CHECK_NULL_PTR(shape);
-    
+
     Array out = {0};
 
     size_t nelems = reduce_mul(shape, ndim);
@@ -122,7 +122,7 @@ Array view(size_t *shape, size_t ndim, Array *arr) {
 // PRINT FUNCTIONS
 void print_info(Array *arr) {
     CHECK_NULL_PTR(arr);
-    
+
     printf("Size of Array: %zu bytes\n",
            get_element_size(arr->dtype) * arr->nelems);
     printf("The array has %zu dimensions and %zu elements\n", arr->ndim,
@@ -137,7 +137,6 @@ void print_info(Array *arr) {
     } else {
         printf("The shape of the array is: NULL\n");
     }
-    
 
     if (arr->strides != NULL) {
         printf("The stride for each dimension of the array are:\n");

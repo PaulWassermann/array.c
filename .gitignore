@@ -1,2 +1,4 @@
 .vscode
 target
+todo
+tests/tests.c

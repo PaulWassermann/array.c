@@ -21,10 +21,10 @@
                   get_iter_str((b)->shape, (b)->ndim, 1024));                  \
         exit(EXIT_FAILURE);                                                    \
     }
-#define CHECK_NULL_PTR(ptr) \
-    if ((ptr) == NULL) { \
-        LOG_ERROR("Pointer %s is NULL\n", #ptr); \
-        exit(EXIT_FAILURE); \
+#define CHECK_NULL_PTR(ptr)                                                    \
+    if ((ptr) == NULL) {                                                       \
+        LOG_ERROR("Pointer %s is NULL\n", #ptr);                               \
+        exit(EXIT_FAILURE);                                                    \
     }
 #define CHECK_NULL_DATA_PTR(arr) CHECK_NULL_PTR((arr)->data)
 #define CHECK_NULL_SHAPE_PTR(arr) CHECK_NULL_PTR((arr)->shape)
@@ -35,7 +35,7 @@
 /*Compute the strides of the given array, with respect to its `shape` and `ndim`
 members.
 
-For a given dimension, its stride is the product of the number of elements in 
+For a given dimension, its stride is the product of the number of elements in
 each of its inner dimensions (the rightmost dimensions).
 
 ### Parameters
