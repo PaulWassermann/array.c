@@ -18,7 +18,7 @@
         assert((a)[i_aae] == (b)[i_aae]);                                      \
     }
 
-#define LENGTH(static_array) sizeof(static_array) / sizeof(static_array[0])
+#define LENGTH(static_array) (sizeof(static_array) / sizeof(static_array[0]))
 
 #define TEST(func)                                                             \
     printf("=> Testing %s... ", #func);                                        \

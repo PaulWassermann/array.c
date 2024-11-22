@@ -3,21 +3,34 @@
 #include "..\..\utils.h"
 
 void test_add() {
-    SizedList operands[] = {sized_list(
-        (Array[]){array((size_t[]){2, 2}, 2, float32, (float[]){1, 2, 3, 4}),
-                  array((size_t[]){2, 2}, 2, float32, (float[]){4, 3, 1, 2})},
-        2)};
+    Array result, expected;
 
-    SizedList expected_results[] = {sized_list((float[]){5, 5, 4, 6}, 4)};
+    Array float32_arr1 =
+        array((size_t[]){2, 2}, 2, float32, (float[]){1, 2, 3, 4});
+    Array float32_arr2 =
+        array((size_t[]){2, 2}, 2, float32, (float[]){4, 3, 1, 2});
+    result = add(&float32_arr1, &float32_arr2);
+    expected = array((size_t[]){2, 2}, 2, float32, (float[]){5, 5, 4, 6});
 
-    for (size_t i = 0; i < LENGTH(operands); i++) {
-        Array array1 = ((Array *)operands[i].data)[0];
-        Array array2 = ((Array *)operands[i].data)[1];
+    assert(expected.dtype == result.dtype);
+    ASSERT_ALL_EQUAL((float *)expected.data, (float *)result.data,
+                     expected.nelems);
 
-        Array result = add(&array1, &array2);
-        float *expected_result = expected_results[i].data;
-        size_t length = expected_results[i].len;
+    FREE_ARRAY_PARTIAL(float32_arr1);
+    FREE_ARRAY_PARTIAL(float32_arr2);
+    FREE_ARRAY_PARTIAL(result);
+    FREE_ARRAY_PARTIAL(expected);
 
-        ASSERT_ALL_EQUAL(expected_result, (float *)result.data, length);
-    }
+    Array int32_arr1 = array((size_t[]){2, 2}, 2, int32, (int[]){1, 2, 3, 4});
+    Array int32_arr2 = array((size_t[]){2, 2}, 2, int32, (int[]){4, 3, 1, 2});
+    result = add(&int32_arr1, &int32_arr2);
+    expected = array((size_t[]){2, 2}, 2, int32, (int[]){5, 5, 4, 6});
+
+    assert(expected.dtype == result.dtype);
+    ASSERT_ALL_EQUAL((int *)expected.data, (int *)result.data, expected.nelems);
+
+    FREE_ARRAY_PARTIAL(int32_arr1);
+    FREE_ARRAY_PARTIAL(int32_arr2);
+    FREE_ARRAY_PARTIAL(result);
+    FREE_ARRAY_PARTIAL(expected);
 }

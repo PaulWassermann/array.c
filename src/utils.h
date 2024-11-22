@@ -49,6 +49,7 @@ If the `shape` member is a NULL pointer.
 void compute_strides(Array *arr);
 
 bool equal_shapes(Array *a, Array *b);
+char *get_device_str(Device device);
 char *get_dtype_str(DType dtype);
 char *get_iter_str(size_t *iter, size_t length, size_t buffer_size);
 size_t reduce_mul(size_t *arr, size_t length);

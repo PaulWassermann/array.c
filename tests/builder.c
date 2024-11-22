@@ -65,17 +65,19 @@ void get_tests_from_file(char *filename, UnitTests *file_tests) {
     while (fgets(line_buffer, XS_BUFFER_SIZE, file) != NULL) {
         if (strncmp(prefix, line_buffer, strlen(prefix)) == 0) {
             size_t bracket_index = 0;
+            char *truncated_line_buffer = &line_buffer[strlen(prefix)];
 
-            for (size_t i = strlen(prefix); i < strlen(line_buffer); i++) {
-                if (line_buffer[i] == '(') {
+            for (size_t i = 0; i < strlen(line_buffer); i++) {
+                if (truncated_line_buffer[i] == '(') {
                     bracket_index = i;
                     break;
                 }
             }
 
-            strncpy_s(file_tests->names[file_tests->ntests++], L_BUFFER_SIZE,
-                      line_buffer + strlen(prefix),
-                      bracket_index - strlen(prefix));
+            if (strncmp("test_", truncated_line_buffer, 5) == 0) {
+                strncpy_s(file_tests->names[file_tests->ntests++],
+                          L_BUFFER_SIZE, truncated_line_buffer, bracket_index);
+            }
         }
     }
 

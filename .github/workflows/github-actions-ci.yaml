@@ -38,8 +38,5 @@ jobs:
       - name: Compile test builder executable
         run: make test-builder
 
-      - name: Compile tests executable
+      - name: Compile and run tests executable
         run: make test
-
-      - name: Run tests executable
-        run: target\tests.exe

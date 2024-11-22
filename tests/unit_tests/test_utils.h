@@ -68,6 +68,11 @@ void test_equal_shapes() {
     }
 }
 
+void test_get_device_str() {
+    assert(strcmp(get_device_str(cpu), "cpu") == 0);
+    assert(strcmp(get_device_str(cuda), "cuda") == 0);
+}
+
 void test_get_dtype_str() {
     assert(strcmp(get_dtype_str(float32), "float32") == 0);
     assert(strcmp(get_dtype_str(int32), "int32") == 0);

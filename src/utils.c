@@ -34,6 +34,18 @@ bool equal_shapes(Array *a, Array *b) {
     return true;
 }
 
+char *get_device_str(Device device) {
+    switch (device) {
+    case cpu:
+        return "cpu";
+    case cuda:
+        return "cuda";
+    default:
+        LOG_ERROR("Device %d does not exist\n", device);
+        exit(EXIT_FAILURE);
+    }
+}
+
 char *get_dtype_str(DType dtype) {
     switch (dtype) {
     case float32:

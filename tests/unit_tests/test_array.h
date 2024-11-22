@@ -13,9 +13,8 @@ void test_array() {
         array_args((size_t[]){1}, 1, float32, malloc(sizeof(float))),
         array_args((size_t[]){64, 10}, 2, float32, NULL),
         array_args((size_t[]){256, 64, 64}, 3, float32, NULL),
-        array_args((size_t[]){8, 4, 4, 1}, 4, float32, NULL),
-        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, float32,
-                   NULL)};
+        array_args((size_t[]){8, 4, 4, 1}, 4, int32, NULL),
+        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, int32, NULL)};
 
     Array expected_arrays[] = {
         (Array){.shape = (size_t[]){1},
@@ -37,12 +36,12 @@ void test_array() {
                 .strides = (size_t[]){16, 4, 1, 1},
                 .ndim = 4,
                 .nelems = 8 * 4 * 4,
-                .dtype = float32},
+                .dtype = int32},
         (Array){.shape = (size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .ndim = 10,
                 .nelems = 8,
-                .dtype = float32},
+                .dtype = int32},
     };
 
     for (size_t i = 0; i < LENGTH(args_array); i++) {
@@ -62,8 +61,24 @@ void test_array() {
         assert(arr.nelems == expected_arr.nelems);
         assert(arr.dtype == expected_arr.dtype);
 
-        free_array(arr);
+        FREE_ARRAY(arr);
     }
+}
+
+void test_constant() {
+    float fvalue = 1.5;
+    Array farr = constant(&fvalue, (size_t[]){4, 2}, 2, float32);
+    float fexpected[] = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5};
+
+    assert(farr.nelems == LENGTH(fexpected));
+    ASSERT_ALL_EQUAL((float *)farr.data, fexpected, LENGTH(fexpected));
+
+    int ivalue = 3;
+    Array iarr = constant(&ivalue, (size_t[]){2, 2, 1}, 3, int32);
+    int iexpected[] = {3, 3, 3, 3};
+
+    assert(iarr.nelems == LENGTH(iexpected));
+    ASSERT_ALL_EQUAL((int *)iarr.data, iexpected, LENGTH(iexpected));
 }
 
 void test_empty() {
@@ -71,9 +86,8 @@ void test_empty() {
         array_args((size_t[]){1}, 1, float32, NULL),
         array_args((size_t[]){64, 10}, 2, float32, NULL),
         array_args((size_t[]){256, 64, 64}, 3, float32, NULL),
-        array_args((size_t[]){8, 4, 4, 1}, 4, float32, NULL),
-        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, float32,
-                   NULL)};
+        array_args((size_t[]){8, 4, 4, 1}, 4, int32, NULL),
+        array_args((size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1}, 10, int32, NULL)};
 
     Array expected_arrays[] = {
         (Array){.data = NULL,
@@ -99,13 +113,13 @@ void test_empty() {
                 .strides = (size_t[]){16, 4, 1, 1},
                 .ndim = 4,
                 .nelems = 8 * 4 * 4,
-                .dtype = float32},
+                .dtype = int32},
         (Array){.data = NULL,
                 .shape = (size_t[]){8, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .strides = (size_t[]){1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                 .ndim = 10,
                 .nelems = 8,
-                .dtype = float32},
+                .dtype = int32},
     };
 
     for (size_t i = 0; i < LENGTH(args_array); i++) {
@@ -120,12 +134,13 @@ void test_empty() {
         assert(arr.nelems == expected_arr.nelems);
         assert(arr.dtype == expected_arr.dtype);
 
-        free_array(arr);
+        FREE_ARRAY(arr);
     }
 }
 
 void test_get_element_size() {
     assert(get_element_size(float32) == sizeof(float));
+    assert(get_element_size(int32) == sizeof(int));
 }
 
 void test_array_index_to_memory() {
@@ -144,7 +159,7 @@ void test_array_index_to_memory() {
                memory_indices[i]);
     }
 
-    free_array(arr);
+    FREE_ARRAY(arr);
 }
 
 void test_memory_index_to_array() {
@@ -165,7 +180,7 @@ void test_memory_index_to_array() {
                          LENGTH(array_indices[i]));
     }
 
-    free_array(arr);
+    FREE_ARRAY(arr);
 }
 
 void test_view() {
@@ -185,5 +200,5 @@ void test_view() {
         ASSERT_ALL_EQUAL(new_arr.shape, (size_t *)new_view.data, new_arr.ndim);
     }
 
-    free_array(arr);
+    FREE_ARRAY(arr);
 }
